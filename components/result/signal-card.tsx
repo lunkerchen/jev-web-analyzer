@@ -40,7 +40,7 @@ export function CustomJudgments({ judgments }: { judgments: AnalysisResponse["ju
   return (
     <details className="rounded-xl border border-dashed bg-card p-4">
       <summary className="flex min-h-11 cursor-pointer items-center gap-2 text-sm font-medium">
-        <ProvenanceTag kind="jev" /> Your custom judgments ({judgments.length})
+        <ProvenanceTag kind="jev" /> 你的自訂判斷（{judgments.length}）
       </summary>
       <div className="mt-3 grid gap-3 md:grid-cols-2">
         {judgments.map((judgment) => (

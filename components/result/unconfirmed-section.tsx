@@ -7,11 +7,11 @@ export function UnconfirmedSection({ classifications }: { classifications: Analy
   return (
     <section className="rounded-xl border bg-card p-5 shadow-sm">
       <div className="flex flex-wrap items-center gap-3">
-        <h2 className="text-lg font-semibold">What Jev couldn&apos;t confirm</h2>
+        <h2 className="text-lg font-semibold">Jev 無法確認的項目</h2>
         <ProvenanceTag kind="jev" />
       </div>
       <p className="mt-1 text-sm text-muted-foreground">
-        Derived only from Jev&apos;s own negative enum values. No categories are invented.
+        僅依 Jev 自己回傳的負面選項列出，不會自行編造類別。
       </p>
       <ul className="mt-3 list-disc space-y-1.5 pl-5">
         {items.length ? (
@@ -22,7 +22,7 @@ export function UnconfirmedSection({ classifications }: { classifications: Analy
           ))
         ) : (
           <li className="list-none text-sm italic text-muted-foreground">
-            Jev returned no negative enum values for this homepage.
+            這個首頁沒有出現 Jev 回傳的負面選項。
           </li>
         )}
       </ul>

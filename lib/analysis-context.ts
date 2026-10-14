@@ -20,6 +20,6 @@ export function prepareAnalysisContext(cleanMarkdown: string): AnalysisContext {
 
 export function analysisContextLabel(context: Pick<AnalysisContext, "sentCharacters" | "sourceCharacters" | "contextTruncated">) {
   return context.contextTruncated
-    ? `Showing first ${context.sentCharacters.toLocaleString()} of ${context.sourceCharacters.toLocaleString()} extracted characters`
-    : `Showing ${context.sourceCharacters.toLocaleString()} extracted characters`;
+    ? `顯示前 ${context.sentCharacters.toLocaleString()} 個字元（共擷取 ${context.sourceCharacters.toLocaleString()} 個字元）`
+    : `顯示全部 ${context.sourceCharacters.toLocaleString()} 個擷取字元`;
 }

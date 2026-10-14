@@ -15,7 +15,7 @@ describe("classifyFailure", () => {
     ]) {
       const result = classifyFailure(code, false);
       expect(result.kind).toBe("service");
-      expect(result.title).not.toBe("Site unreachable");
+      expect(result.title).not.toBe("無法連上網站");
     }
   });
 
@@ -30,7 +30,7 @@ describe("classifyFailure", () => {
   it("treats our own rate limit as throttling, not as an outage", () => {
     const result = classifyFailure("RATE_LIMITED", false);
     expect(result.kind).toBe("rate");
-    expect(result.title).toBe("Too many requests");
+    expect(result.title).toBe("請求過於頻繁");
   });
 
   it("keeps genuine fetch failures as site unreachable", () => {
@@ -52,8 +52,8 @@ describe("classifyFailure", () => {
   });
 
   it("falls back to the fetch status only when no code was returned", () => {
-    expect(classifyFailure(undefined, true).title).toBe("Jev didn't return a result");
-    expect(classifyFailure(undefined, false).title).toBe("The analysis did not complete");
+    expect(classifyFailure(undefined, true).title).toBe("Jev 沒有回傳結果");
+    expect(classifyFailure(undefined, false).title).toBe("分析未完成");
     expect(classifyFailure("", false).kind).toBe("unknown");
   });
 
@@ -91,12 +91,12 @@ describe("classifyFailure", () => {
   it("never lets the raw server message contradict the classified kind", () => {
     // RESPONSE_TOO_LARGE is about the fetched page size, not the URL the user typed.
     const tooLarge = safeError(new Error("RESPONSE_TOO_LARGE"));
-    expect(tooLarge.message).not.toContain("URL");
+    expect(tooLarge.message).not.toContain("網址");
     expect(classifyFailure(tooLarge.code, true).kind).toBe("content");
 
     // A genuine URL rejection still says so.
     const badUrl = safeError(new Error("INVALID_URL"));
-    expect(badUrl.message).toContain("URL");
+    expect(badUrl.message).toContain("網址");
     expect(classifyFailure(badUrl.code, false).kind).toBe("url");
   });
 });

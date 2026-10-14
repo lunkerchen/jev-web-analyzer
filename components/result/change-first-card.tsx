@@ -11,7 +11,7 @@ export function ChangeFirstCard({ classification }: { classification: AnalysisRe
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col items-start gap-2">
           <ProvenanceTag kind="jev" />
-          <h3 className="text-sm font-semibold">Change first</h3>
+          <h3 className="text-sm font-semibold">優先修改</h3>
         </div>
         <ConfidenceBadge confidence={classification.confidence} />
       </div>
@@ -23,7 +23,7 @@ export function ChangeFirstCard({ classification }: { classification: AnalysisRe
             : "border-border bg-muted text-muted-foreground",
         )}
       >
-        {low ? "Tentative suggestion · Jev is not confident" : "Returned classification"}
+        {low ? "暫定建議 · Jev 信心不高" : "Jev 回傳的分類"}
       </span>
       <div className="mt-3">
         <ConclusionBlock classification={classification} />

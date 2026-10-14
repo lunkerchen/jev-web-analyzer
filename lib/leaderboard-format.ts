@@ -38,10 +38,10 @@ export function matchedLevelDescription(
 
 export function pricingLabel(value: string): string {
   const labels: Record<string, string> = {
-    visible_price: "Visible price",
-    freemium_or_free_trial: "Freemium / free trial",
-    contact_sales_only: "Contact sales only",
-    no_pricing_info: "No pricing info",
+    visible_price: "公開價格",
+    freemium_or_free_trial: "免費方案／免費試用",
+    contact_sales_only: "需洽詢業務",
+    no_pricing_info: "未提供價格資訊",
   };
   return labels[value] ?? value;
 }
@@ -49,7 +49,7 @@ export function pricingLabel(value: string): string {
 export function formatRunDate(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
-  return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+  return date.toLocaleDateString("zh-TW", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
 }
 
 export const SITE_URL = "https://replynodes.com/jev-web-analyzer";
@@ -63,7 +63,7 @@ export function badgeMarkdown(domain: string): string {
 export type RubricQuestionMeta = { id: string; label: string };
 
 export function scoreQuestionMeta(rubric: RubricFile): RubricQuestionMeta[] {
-  return rubric.score_question_ids.map((id) => ({ id, label: labelForQuestionId(id) }));
+  return rubric.score_question_ids.map((id) => ({ id, label: labelForQuestionIdZh(id) }));
 }
 
 export function labelForQuestionId(id: string): string {
@@ -71,4 +71,18 @@ export function labelForQuestionId(id: string): string {
     .split("_")
     .map((word) => ACRONYMS[word] ?? word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+const QUESTION_LABELS_ZH: Record<string, string> = {
+  clarity_what_is_it: "產品定位清晰度",
+  clarity_icp: "目標客群清晰度",
+  cta_clarity: "行動按鈕清晰度",
+  differentiation: "差異化",
+  evidence_trust: "佐證與信任度",
+  pricing_visibility: "定價揭露程度",
+};
+
+/** Traditional Chinese label for on-page display. The OG image keeps the English labelForQuestionId. */
+export function labelForQuestionIdZh(id: string): string {
+  return QUESTION_LABELS_ZH[id] ?? labelForQuestionId(id);
 }

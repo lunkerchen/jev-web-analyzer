@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { Check, Circle, LoaderCircle, X } from "lucide-react";
 import type { TraceState } from "@/lib/analysis-trace";
+import { formatUsd, jevCostUsd } from "@/lib/jev-cost";
 
 const stages = [
-  { key: "fetch", title: "Fetch webpage with ReplyNodes" },
-  { key: "extract", title: "Extract clean Markdown" },
-  { key: "context", title: "Prepare context for Jev" },
-  { key: "jev", title: "Run 10 founder judgments via Jev" },
-  { key: "result", title: "Build analysis result" },
+  { key: "fetch", title: "用 ReplyNodes 擷取網頁" },
+  { key: "extract", title: "擷取乾淨的 Markdown" },
+  { key: "context", title: "為 Jev 準備上下文" },
+  { key: "jev", title: "用 Jev 執行 10 項創辦人判斷" },
+  { key: "result", title: "產生分析結果" },
 ] as const;
 type StageKey = (typeof stages)[number]["key"];
 
@@ -24,12 +25,12 @@ export function Trace({ trace }: { trace: TraceState }) {
   const [expanded, setExpanded] = useState(trace.status !== "complete");
   useEffect(() => { if (trace.status === "complete") setExpanded(false); }, [trace.status]);
   return (
-    <section className="mt-8" aria-live="polite" aria-label="Analysis progress">
+    <section className="mt-8" aria-live="polite" aria-label="分析進度">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-medium">Execution trace</h2>
+        <h2 className="text-sm font-medium">執行紀錄</h2>
         {trace.status === "complete" && (
           <button type="button" className="min-h-11 px-2 text-xs underline underline-offset-4" onClick={() => setExpanded(!expanded)}>
-            {expanded ? "Collapse" : "Expand"}
+            {expanded ? "收合" : "展開"}
           </button>
         )}
       </div>
@@ -44,17 +45,17 @@ export function Trace({ trace }: { trace: TraceState }) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm">{title}</p>
-                  {key === "fetch" && trace.metrics.scrapeMs !== undefined && <p className="font-mono text-xs text-muted-foreground">{trace.metrics.scrapeMs} ms · HTTP {trace.metrics.status ?? "unknown"}</p>}
-                  {key === "context" && trace.metrics.characters !== undefined && <p className="font-mono text-xs text-muted-foreground">{trace.metrics.characters.toLocaleString()} characters prepared</p>}
-                  {key === "jev" && trace.metrics.jevMs !== undefined && <p className="font-mono text-xs text-muted-foreground">{trace.metrics.jevMs} ms{trace.metrics.inputTokens !== undefined ? ` · ${trace.metrics.inputTokens.toLocaleString()} input tokens` : ""}{trace.metrics.outputTokens !== undefined ? ` · ${trace.metrics.outputTokens.toLocaleString()} output tokens` : ""}</p>}
-                  {key === "result" && trace.result && <p className="font-mono text-xs text-muted-foreground">{trace.result.timeline.totalMs} ms total</p>}
+                  {key === "fetch" && trace.metrics.scrapeMs !== undefined && <p className="font-mono text-xs text-muted-foreground">{trace.metrics.scrapeMs} ms · HTTP {trace.metrics.status ?? "未知"}</p>}
+                  {key === "context" && trace.metrics.characters !== undefined && <p className="font-mono text-xs text-muted-foreground">{trace.metrics.characters.toLocaleString()} 個字元已備妥</p>}
+                  {key === "jev" && trace.metrics.jevMs !== undefined && <p className="font-mono text-xs text-muted-foreground">{trace.metrics.jevMs} ms{trace.metrics.inputTokens !== undefined ? ` · ${trace.metrics.inputTokens.toLocaleString()} 個輸入 token` : ""}{trace.metrics.inputTokens !== undefined ? ` · 約 ${formatUsd(jevCostUsd(trace.metrics.inputTokens)!)}` : ""}{trace.metrics.outputTokens !== undefined ? ` · ${trace.metrics.outputTokens.toLocaleString()} 個輸出 token` : ""}</p>}
+                  {key === "result" && trace.result && <p className="font-mono text-xs text-muted-foreground">{trace.result.timeline.totalMs} ms</p>}
                 </div>
               </div>
             );
           })}
         </div>
       ) : (
-        trace.result && <div className="rounded-xl border p-3 font-mono text-xs text-muted-foreground">Complete · {trace.result.timeline.totalMs} ms total</div>
+        trace.result && <div className="rounded-xl border p-3 font-mono text-xs text-muted-foreground">完成 · 共 {trace.result.timeline.totalMs} ms</div>
       )}
     </section>
   );

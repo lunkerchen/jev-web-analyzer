@@ -20,6 +20,7 @@ import { rowsToLeaderboardCsv, type LeaderboardRow } from "../lib/csv";
 import { exampleDomainUrl } from "../lib/example-domains";
 import { computeOverall, loadRubric, sanitizeRubricAnswer, type RubricFile } from "../lib/rubric";
 import { fetchPublicMarkdown } from "../lib/url-safety";
+import { jevCostUsd } from "../lib/jev-cost";
 
 const MODEL = typeSafeAi.evaluationModel("jev-latest");
 
@@ -318,11 +319,19 @@ function printSummary(rows: readonly LeaderboardRow[], wallMs: number, opts: Bat
   console.log(`failed: ${failed.length}`);
   console.log(`wall time: ${(wallMs / 1000).toFixed(1)}s`);
   console.log(`latency median: ${median ?? "n/a"}ms, p95: ${p95 ?? "n/a"}ms`);
+  // scrape_failed rows never reached Jev, so they cost nothing and are not "missing usage".
+  const jevRows = rows.filter((row) => row.status !== "scrape_failed");
+  const withUsage = jevRows.filter((row) => row.usage?.inputTokens !== undefined).length;
+  if (jevRows.length > 0 && withUsage === 0) {
+    console.log("cost: not available (provider returned no token usage)");
+    return;
+  }
+  const note = withUsage < jevRows.length ? `; ${jevRows.length - withUsage} domain(s) missing usage, so this is a lower bound` : "";
   if (opts.pricePer1kInput !== undefined && opts.pricePer1kOutput !== undefined) {
     const cost = (totalInputTokens / 1000) * opts.pricePer1kInput + (totalOutputTokens / 1000) * opts.pricePer1kOutput;
-    console.log(`total cost: $${cost.toFixed(4)} (input tokens: ${totalInputTokens}, output tokens: ${totalOutputTokens})`);
+    console.log(`total cost: $${cost.toFixed(4)} (input tokens: ${totalInputTokens}, output tokens: ${totalOutputTokens}${note})`);
   } else {
-    console.log("cost: not available (no token pricing configured; pass --price-per-1k-input/--price-per-1k-output)");
+    console.log(`total cost: $${jevCostUsd(totalInputTokens)!.toFixed(4)} at Jev list price (input tokens: ${totalInputTokens}, output tokens: ${totalOutputTokens} free${note})`);
   }
 }
 

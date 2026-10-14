@@ -7,9 +7,9 @@ export const HERO_SIGNAL_NAMES = ["audience", "strongest_reason_to_choose", "sel
 export type HeroSignalName = (typeof HERO_SIGNAL_NAMES)[number];
 
 export const HERO_SIGNAL_LABELS: Record<HeroSignalName, string> = {
-  audience: "For",
-  strongest_reason_to_choose: "Reason to choose",
-  self_serve_motion: "Motion",
+  audience: "目標客群",
+  strongest_reason_to_choose: "選擇理由",
+  self_serve_motion: "成交模式",
 };
 
 export type HeroSignal = {

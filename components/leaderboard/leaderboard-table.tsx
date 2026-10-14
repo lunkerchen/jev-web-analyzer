@@ -49,29 +49,29 @@ export function LeaderboardTable({ rows, scoreQuestions }: { rows: LeaderboardRo
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <label className="flex items-center gap-2 text-sm text-muted-foreground">
-          Pricing visibility
+          定價揭露程度
           <select
             value={pricingFilter}
             onChange={(event) => setPricingFilter(event.target.value)}
             className="h-9 rounded-md border border-input bg-transparent px-2 text-sm text-foreground shadow-xs outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
-            <option value="all">All</option>
+            <option value="all">全部</option>
             {PRICING_OPTIONS.map((option) => (
               <option key={option} value={option}>{pricingLabel(option)}</option>
             ))}
           </select>
         </label>
-        <span className="text-sm text-muted-foreground">{filtered.length} of {rows.length} domains</span>
+        <span className="text-sm text-muted-foreground">顯示 {filtered.length} / {rows.length} 個網域</span>
       </div>
 
       <div className="overflow-x-auto rounded-xl border shadow-sm">
         <table className="w-full min-w-[720px] border-collapse text-sm">
           <thead>
             <tr className="border-b bg-muted/50 text-left">
-              <th className="px-3 py-2 font-semibold">Domain</th>
+              <th className="px-3 py-2 font-semibold">網域</th>
               <th className="px-3 py-2 font-semibold">
                 <button type="button" onClick={() => toggleSort("overall")} className="inline-flex items-center hover:underline">
-                  Overall{sortIndicator("overall")}
+                  總分{sortIndicator("overall")}
                 </button>
               </th>
               {scoreQuestions.map((question) => (
@@ -81,7 +81,7 @@ export function LeaderboardTable({ rows, scoreQuestions }: { rows: LeaderboardRo
                   </button>
                 </th>
               ))}
-              <th className="px-3 py-2 font-semibold">Pricing</th>
+              <th className="px-3 py-2 font-semibold">定價</th>
             </tr>
           </thead>
           <tbody>
@@ -121,7 +121,7 @@ export function LeaderboardTable({ rows, scoreQuestions }: { rows: LeaderboardRo
             {!filtered.length ? (
               <tr>
                 <td colSpan={3 + scoreQuestions.length} className="px-3 py-6 text-center text-muted-foreground">
-                  No domains match this filter.
+                  沒有符合此篩選條件的網域。
                 </td>
               </tr>
             ) : null}

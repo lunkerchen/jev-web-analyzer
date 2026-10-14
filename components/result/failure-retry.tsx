@@ -37,20 +37,20 @@ export function FailureRetry({
       </div>
       <p className="mt-2 text-sm text-muted-foreground">{detail}</p>
       <p className="mt-2 break-words font-mono text-xs text-muted-foreground">
-        Server message: {error || "The analysis could not be completed."}
+        伺服器訊息：{error || "分析無法完成。"}
       </p>
       <p className="mt-1 break-words font-mono text-xs text-muted-foreground">
-        Request ID: {requestId ?? "Request ID not returned"}
+        請求 ID：{requestId ?? "未回傳請求 ID"}
       </p>
       <p className="mt-1 font-mono text-xs text-muted-foreground">
-        Fetch status: {fetched ? trace.metrics.status : "not returned"}
+        擷取狀態：{fetched ? trace.metrics.status : "未回傳"}
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Button type="button" onClick={onRetry}>
-          <RotateCw /> Retry analysis
+          <RotateCw /> 重新分析
         </Button>
         <Link href={editHref} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">
-          Edit and retry
+          修改網址後重試
         </Link>
       </div>
     </section>

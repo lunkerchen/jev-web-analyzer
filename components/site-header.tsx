@@ -8,7 +8,7 @@ export function SiteHeader({ crumb }: { crumb: string }) {
   return (
     <header className="mx-auto flex max-w-5xl items-center justify-between">
       <div className="flex min-w-0 items-center gap-2">
-        <a href="https://replynodes.com/" target="_blank" rel="noreferrer" aria-label="ReplyNodes home" onClick={() => trackReplynodesCtaClicked("header")} className="flex shrink-0 items-center gap-1.5">
+        <a href="https://replynodes.com/" target="_blank" rel="noreferrer" aria-label="ReplyNodes 首頁" onClick={() => trackReplynodesCtaClicked("header")} className="flex shrink-0 items-center gap-1.5">
           <svg width="20" height="20" viewBox="0 0 40 40" fill="none" aria-hidden="true">
             <rect width="40" height="40" rx="10" fill="#A2D98A" />
             <line x1="20" y1="20" x2="11" y2="11" stroke="#223835" strokeWidth="1.6" strokeLinecap="round" />
@@ -28,7 +28,7 @@ export function SiteHeader({ crumb }: { crumb: string }) {
         <span className="truncate text-sm text-muted-foreground">{crumb}</span>
       </div>
       <div className="flex shrink-0 items-center gap-3">
-        <Link href="/leaderboard" className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline">Leaderboard</Link>
+        <Link href="/leaderboard" className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline">排行榜</Link>
         <ThemeToggle />
       </div>
     </header>

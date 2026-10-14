@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { loadLeaderboardData, matchedLevelDescription, scoreBand } from "./leaderboard";
+import { labelForQuestionId, labelForQuestionIdZh, loadLeaderboardData, matchedLevelDescription, pricingLabel, scoreBand } from "./leaderboard";
 import type { RubricQuestion } from "./rubric";
 
 describe("scoreBand", () => {
@@ -75,5 +75,17 @@ describe("loadLeaderboardData", () => {
     const result = loadLeaderboardData({ dataDir: dir });
     expect(result?.dataset.rubric_version).toBe("v1");
     expect(result?.rubric.rubric_version).toBe("v1");
+  });
+});
+
+describe("zh-TW display labels", () => {
+  it("translates known question ids and falls back to the English label", () => {
+    expect(labelForQuestionIdZh("cta_clarity")).toBe("行動按鈕清晰度");
+    expect(labelForQuestionIdZh("some_new_question")).toBe(labelForQuestionId("some_new_question"));
+  });
+
+  it("translates pricing categories and passes unknown values through", () => {
+    expect(pricingLabel("contact_sales_only")).toBe("需洽詢業務");
+    expect(pricingLabel("other")).toBe("other");
   });
 });

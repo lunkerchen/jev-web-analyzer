@@ -1,14 +1,14 @@
 export function safeError(error: unknown) {
   const code = error instanceof Error ? error.message : "ANALYSIS_FAILED";
-  if (code === "RESPONSE_TOO_LARGE") return { status: 400, code, message: "This page is too large to analyze." };
-  if (["INVALID_URL", "BLOCKED_URL"].includes(code)) return { status: 400, code, message: "That URL cannot be analyzed." };
-  if (code === "RATE_LIMITED") return { status: 429, code, message: "Too many requests. Please try again shortly." };
-  if (code === "FETCH_TIMEOUT") return { status: 504, code, message: "The website took too long to respond and could not be analyzed. Please try again." };
-  if (code === "DNS_LOOKUP_FAILED") return { status: 502, code, message: "This website's address could not be found. Check the URL and try again." };
-  if (code === "SITE_UNREACHABLE") return { status: 502, code, message: "This website could not be retrieved for analysis. It may block automated access, require a login, or be unavailable. Try a different URL." };
-  if (code === "PROVIDER_RATE_LIMITED") return { status: 503, code, message: "The web content service is receiving too many requests right now. Please try again shortly." };
-  if (code === "PROVIDER_UNAVAILABLE" || code === "PROVIDER_UNREACHABLE") return { status: 503, code, message: "The web content service is temporarily unavailable. Please try again." };
-  if (code === "PROVIDER_UNAUTHORIZED") return { status: 503, code, message: "Analysis is temporarily unavailable." };
-  if (code === "PROVIDER_BAD_RESPONSE" || code === "INVALID_PROVIDER_RESPONSE") return { status: 502, code, message: "ReplyNodes returned no usable clean Markdown for this website. It may be a client-rendered page or block automated access. Try a different URL." };
-  return { status: 502, code: "UPSTREAM_FAILED", message: "The analysis could not be completed. Please try again." };
+  if (code === "RESPONSE_TOO_LARGE") return { status: 400, code, message: "這個頁面太大，無法分析。" };
+  if (["INVALID_URL", "BLOCKED_URL"].includes(code)) return { status: 400, code, message: "無法分析這個網址。" };
+  if (code === "RATE_LIMITED") return { status: 429, code, message: "請求過於頻繁，請稍後再試。" };
+  if (code === "FETCH_TIMEOUT") return { status: 504, code, message: "網站回應時間過長，無法完成分析，請稍後再試。" };
+  if (code === "DNS_LOOKUP_FAILED") return { status: 502, code, message: "找不到這個網站的位址，請檢查網址後再試。" };
+  if (code === "SITE_UNREACHABLE") return { status: 502, code, message: "無法取得這個網站的內容。網站可能封鎖自動化存取、需要登入，或暫時無法連線。請改試其他網址。" };
+  if (code === "PROVIDER_RATE_LIMITED") return { status: 503, code, message: "網頁內容服務目前請求量過大，請稍後再試。" };
+  if (code === "PROVIDER_UNAVAILABLE" || code === "PROVIDER_UNREACHABLE") return { status: 503, code, message: "網頁內容服務暫時無法使用，請稍後再試。" };
+  if (code === "PROVIDER_UNAUTHORIZED") return { status: 503, code, message: "分析服務暫時無法使用。" };
+  if (code === "PROVIDER_BAD_RESPONSE" || code === "INVALID_PROVIDER_RESPONSE") return { status: 502, code, message: "ReplyNodes 沒有為這個網站回傳可用的乾淨 Markdown。網站可能是用戶端渲染，或封鎖自動化存取。請改試其他網址。" };
+  return { status: 502, code: "UPSTREAM_FAILED", message: "無法完成分析，請稍後再試。" };
 }

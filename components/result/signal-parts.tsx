@@ -1,7 +1,7 @@
 import type { AnalysisResponse } from "@/lib/contracts";
 import { isLowConfidence } from "@/lib/confidence";
 import { signalConclusion, sortedProbabilities } from "@/lib/probabilities";
-import { humanize, type SignalStatus } from "@/lib/signal-map";
+import { valueLabel, type SignalStatus } from "@/lib/signal-map";
 import { cn } from "@/lib/utils";
 
 export type Classification = AnalysisResponse["classifications"][number];
@@ -14,7 +14,7 @@ export function ConfidenceBadge({ confidence }: { confidence?: number }) {
   if (typeof confidence !== "number") {
     return (
       <span className="whitespace-nowrap rounded-full border border-border bg-muted px-2 py-1 text-[11px] font-bold text-muted-foreground">
-        Confidence not returned
+        未回傳信心度
       </span>
     );
   }
@@ -28,16 +28,16 @@ export function ConfidenceBadge({ confidence }: { confidence?: number }) {
           : "border-border bg-muted text-foreground",
       )}
     >
-      {percent(confidence)} confidence{low ? " · low confidence" : ""}
+      信心度 {percent(confidence)}{low ? " · 偏低" : ""}
     </span>
   );
 }
 
 const STATUS_LABEL: Record<SignalStatus, string> = {
-  supported: "Supported",
-  partial: "Partial",
-  weak: "Weak",
-  insufficient: "Not determined",
+  supported: "有支持",
+  partial: "部分支持",
+  weak: "偏弱",
+  insufficient: "無法判斷",
 };
 
 const STATUS_STYLE: Record<SignalStatus, string> = {
@@ -68,24 +68,24 @@ export function ConclusionBlock({ classification }: { classification: Classifica
   if (conclusion.kind === "undetermined") {
     return (
       <div>
-        <p className="text-sm font-semibold text-muted-foreground">Jev couldn&apos;t determine this from the homepage</p>
+        <p className="text-sm font-semibold text-muted-foreground">Jev 無法從首頁判斷這一項</p>
         <p className="mt-1 text-xs text-muted-foreground">
-          Jev&apos;s returned value:{" "}
+          Jev 回傳的值：{" "}
           <b className="font-mono text-foreground">
-            {humanize(conclusion.returnedValue)}
+            {valueLabel(conclusion.returnedValue)}
             {conclusion.probability === undefined ? "" : ` ${percent(conclusion.probability)}`}
           </b>{" "}
-          · not actionable
+          · 無法據以行動
         </p>
         {conclusion.nextActionable ? (
           <p className="mt-1 text-xs text-muted-foreground">
-            Next actionable option:{" "}
+            下一個可行動的選項：{" "}
             <b className="text-foreground">
-              {humanize(conclusion.nextActionable.value)} {percent(conclusion.nextActionable.probability)}
+              {valueLabel(conclusion.nextActionable.value)} {percent(conclusion.nextActionable.probability)}
             </b>
           </p>
         ) : (
-          <p className="mt-1 text-xs text-muted-foreground">No actionable option returned.</p>
+          <p className="mt-1 text-xs text-muted-foreground">沒有回傳可行動的選項。</p>
         )}
       </div>
     );
@@ -94,17 +94,17 @@ export function ConclusionBlock({ classification }: { classification: Classifica
   return (
     <div>
       <p className="text-xl font-extrabold tracking-tight">
-        Jev&apos;s pick:{" "}
+        Jev 的選擇：{" "}
         <b>
-          {humanize(conclusion.value)}
+          {valueLabel(conclusion.value)}
           {conclusion.probability === undefined ? "" : ` ${percent(conclusion.probability)}`}
         </b>
       </p>
       {conclusion.closeCall && conclusion.closeAlternative ? (
         <p className="mt-1 text-sm font-bold">
-          Close call:{" "}
+          差距很小：{" "}
           <b>
-            {humanize(conclusion.closeAlternative.value)} {percent(conclusion.closeAlternative.probability)}
+            {valueLabel(conclusion.closeAlternative.value)} {percent(conclusion.closeAlternative.probability)}
           </b>
         </p>
       ) : null}
@@ -117,22 +117,22 @@ export function DistributionDisclosure({ probabilities }: { probabilities?: Reco
   return (
     <details className="mt-4 border-t pt-3">
       <summary className="min-h-9 cursor-pointer list-none text-xs font-extrabold text-[#5b4bc4] marker:content-none dark:text-[#b3a5ff]">
-        View Jev&apos;s distribution
+        查看 Jev 的機率分布
       </summary>
       {rows.length ? (
         <div className="mt-2 grid gap-1.5">
           {rows.map((row) => (
             <div key={row.value} className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
-              <span className="truncate">{humanize(row.value)}</span>
+              <span className="truncate">{valueLabel(row.value)}</span>
               <b className="font-mono tabular-nums text-foreground">{percent(row.probability)}</b>
             </div>
           ))}
         </div>
       ) : (
-        <p className="mt-2 text-xs text-muted-foreground">No probability distribution was returned.</p>
+        <p className="mt-2 text-xs text-muted-foreground">沒有回傳機率分布。</p>
       )}
       <p className="mt-2 text-[11px] text-muted-foreground">
-        Native probabilities as returned · {rows.length} returned options
+        原始機率 · 共 {rows.length} 個選項
       </p>
     </details>
   );

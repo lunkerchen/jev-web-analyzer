@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Jev Web Analyzer · ReplyNodes",
-  description: "Analyze web context with ReplyNodes and Jev via Vercel AI Gateway.",
+  title: "Jev 網站分析器 · ReplyNodes",
+  description: "用 ReplyNodes 與 Jev 分析網站內容，看首次造訪者會怎麼理解你的首頁。",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="zh-Hant-TW" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

@@ -5,8 +5,8 @@ type Classification = AnalysisResponse["classifications"][number];
 
 export type UnconfirmedItem = { name: string; label: string; message: string };
 
-const NOT_APPARENT = "Not apparent from the homepage";
-const NOT_CLEARLY_COMMUNICATED = "Not clearly communicated on the homepage";
+const NOT_APPARENT = "首頁上看不出來";
+const NOT_CLEARLY_COMMUNICATED = "首頁上沒有講清楚";
 
 /**
  * The "couldn't confirm" list is derived ONLY from Jev's own negative enum

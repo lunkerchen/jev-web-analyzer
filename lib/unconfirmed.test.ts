@@ -31,8 +31,8 @@ describe("unconfirmedItems", () => {
       classification("differentiation", "not_apparent"),
       classification("strongest_reason_to_choose", "no_clear_reason"),
     ]);
-    expect(items[0].message).toBe("Not apparent from the homepage");
-    expect(items[1].message).toBe("Not clearly communicated on the homepage");
+    expect(items[0].message).toBe("首頁上看不出來");
+    expect(items[1].message).toBe("首頁上沒有講清楚");
     for (const item of items) {
       expect(item.message).not.toMatch(/pricing|case stud|blog|testimonial/i);
     }

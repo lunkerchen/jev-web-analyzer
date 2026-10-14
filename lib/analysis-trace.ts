@@ -83,12 +83,12 @@ export const analysisEventSchema = z.discriminatedUnion("type", [
 
 export function scoreLabel(value: number, criteria: string[]) {
   const index = Math.max(0, Math.min(criteria.length - 1, Math.round(value) - 1));
-  return criteria[index] ?? "Unrated";
+  return criteria[index] ?? "未評分";
 }
 
 export function answerLabel(name: string, value: boolean | string | number) {
-  if (name === "seo_spam_likelihood" && typeof value === "boolean") return value ? "Likely spam-like" : "Likely useful";
-  if (typeof value === "boolean") return value ? "Likely yes" : "Likely no";
+  if (name === "seo_spam_likelihood" && typeof value === "boolean") return value ? "可能是垃圾內容" : "可能有用";
+  if (typeof value === "boolean") return value ? "可能是" : "可能不是";
   if (typeof value === "number") return `${value}`;
   return value;
 }

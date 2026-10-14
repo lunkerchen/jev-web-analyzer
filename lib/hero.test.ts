@@ -27,7 +27,7 @@ describe("hero helpers", () => {
       classification("trust_strength", "strong"),
     ]);
     expect(slots.map((slot) => slot.name)).toEqual(["audience", "strongest_reason_to_choose", "self_serve_motion"]);
-    expect(slots.map((slot) => slot.label)).toEqual(["For", "Reason to choose", "Motion"]);
+    expect(slots.map((slot) => slot.label)).toEqual(["目標客群", "選擇理由", "成交模式"]);
     expect(slots[0].classification?.value).toBe("developers");
   });
 

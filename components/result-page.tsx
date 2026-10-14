@@ -18,7 +18,7 @@ import { UnconfirmedSection } from "@/components/result/unconfirmed-section";
 import { WhyBuild } from "@/components/result/why-build";
 import { SiteHeader } from "@/components/site-header";
 import { trackAnalysisCompleted, trackAnalysisStarted, trackDomainVisit } from "@/lib/analytics";
-import type { TraceState } from "@/lib/analysis-trace";
+import type { TraceStage, TraceState } from "@/lib/analysis-trace";
 import type { AnalysisResponse } from "@/lib/contracts";
 import { useAnalysis } from "@/lib/hooks/use-analysis";
 import { inputPath, safeInitialUrl, withAnalyzedUrl } from "@/lib/query-url";
@@ -28,11 +28,19 @@ import { CHANGE_FIRST_SIGNAL, PRIMARY_SIGNAL_NAMES } from "@/lib/signal-map";
 
 const THIN_CONTENT_THRESHOLD = 500;
 
+const STAGE_LABEL: Record<TraceStage, string> = {
+  fetch: "擷取首頁",
+  extract: "轉換內容",
+  context: "整理上下文",
+  jev: "Jev 判讀中",
+  result: "彙整結果",
+};
+
 function LoadingState({ trace }: { trace: TraceState }) {
   return (
     <div className="mt-8 space-y-6" aria-live="polite" aria-busy="true">
       <p className="text-xs text-muted-foreground">
-        {trace.activeStage ? `Reading your homepage · ${trace.activeStage}` : "Reading your homepage…"}
+        {trace.activeStage ? `正在讀取你的首頁 · ${STAGE_LABEL[trace.activeStage]}` : "正在讀取你的首頁…"}
       </p>
       <SectionSkeleton lines={2} />
       <div className="grid gap-3 md:grid-cols-3">
@@ -116,7 +124,7 @@ export function ResultPage() {
 
   return (
     <main className="min-h-screen overflow-x-hidden px-4 py-5 md:px-8">
-      <SiteHeader crumb="jev web analyzer / result" />
+      <SiteHeader crumb="jev 網站分析器 / 分析結果" />
       <section className="mx-auto max-w-6xl pb-16 pt-10 md:pt-14">
         <ResultHeaderStrip
           url={displayedUrl}
@@ -131,7 +139,7 @@ export function ResultPage() {
             className="mt-6 flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
           >
             <AlertCircle className="size-4 shrink-0" />
-            <span>No URL to analyze. Go back and enter a public SaaS URL.</span>
+            <span>沒有可分析的網址。請回上一頁，輸入公開的 SaaS 網址。</span>
           </div>
         )}
 
@@ -141,8 +149,8 @@ export function ResultPage() {
 
             <section className="space-y-4">
               <SectionHeading
-                title="What Jev understood"
-                description="Returned enum labels and native distributions. Every card carries its own confidence and a provenance tag."
+                title="Jev 看懂了什麼"
+                description="Jev 回傳的選項與原始機率分布。每張卡片都標示自己的信心度與資料來源。"
               />
               {thinContent ? <ThinContentBanner characters={result.usage.characters} /> : null}
               <div className="grid gap-3 md:grid-cols-2">
@@ -162,8 +170,8 @@ export function ResultPage() {
             {changeFirst ? (
               <section className="space-y-4">
                 <SectionHeading
-                  title="What Jev would change first"
-                  description="One returned enum, with its native distribution and any close runner-up. Not a prose recommendation."
+                  title="Jev 建議先改什麼"
+                  description="Jev 回傳的單一選項，附上原始機率分布與接近的次選項。不是長篇文字建議。"
                 />
                 <ChangeFirstCard classification={changeFirst} />
               </section>
@@ -173,8 +181,8 @@ export function ResultPage() {
 
             <section className="space-y-4">
               <SectionHeading
-                title="Run details"
-                description="Metadata returned by the gateway. No resolved model version is claimed."
+                title="執行細節"
+                description="本次執行回傳的中繼資料。不宣稱實際使用的模型版本。"
               />
               <RunEvidence result={result} trace={trace} />
               <SourcePanel scrape={result.scrape} />

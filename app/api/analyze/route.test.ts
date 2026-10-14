@@ -27,7 +27,7 @@ describe("analyze route GET", () => {
 
     expect(response.status).toBe(405);
     expect(response.headers.get("allow")).toBe("POST");
-    expect(await response.json()).toEqual({ message: "Use POST /jev-web-analyzer/api/analyze to analyze a URL." });
+    expect(await response.json()).toEqual({ message: "請使用 POST /jev-web-analyzer/api/analyze 分析網址。" });
   });
 });
 
@@ -41,24 +41,24 @@ describe("analyze route errors", () => {
     expect(await response.text()).toContain('"type":"error"');
   });
   it("maps internal provider failures to a generic public error", () => {
-    expect(safeError(new Error("provider included a secret"))).toEqual({ status: 502, code: "UPSTREAM_FAILED", message: "The analysis could not be completed. Please try again." });
+    expect(safeError(new Error("provider included a secret"))).toEqual({ status: 502, code: "UPSTREAM_FAILED", message: "無法完成分析，請稍後再試。" });
   });
   it("keeps validation failures actionable without leaking internals", () => {
     expect(safeError(new Error("BLOCKED_URL")).status).toBe(400);
   });
   it("reports scrape timeouts as an actionable gateway timeout instead of a generic upstream failure", () => {
-    expect(safeError(new Error("FETCH_TIMEOUT"))).toEqual({ status: 504, code: "FETCH_TIMEOUT", message: "The website took too long to respond and could not be analyzed. Please try again." });
+    expect(safeError(new Error("FETCH_TIMEOUT"))).toEqual({ status: 504, code: "FETCH_TIMEOUT", message: "網站回應時間過長，無法完成分析，請稍後再試。" });
   });
   it("reports a fast non-2xx provider rejection with its own actionable classification instead of the generic upstream failure", () => {
     expect(safeError(new Error("PROVIDER_RATE_LIMITED")).status).toBe(503);
     expect(safeError(new Error("PROVIDER_UNAVAILABLE")).status).toBe(503);
     expect(safeError(new Error("PROVIDER_UNAUTHORIZED")).status).toBe(503);
-    expect(safeError(new Error("SITE_UNREACHABLE"))).toEqual({ status: 502, code: "SITE_UNREACHABLE", message: "This website could not be retrieved for analysis. It may block automated access, require a login, or be unavailable. Try a different URL." });
+    expect(safeError(new Error("SITE_UNREACHABLE"))).toEqual({ status: 502, code: "SITE_UNREACHABLE", message: "無法取得這個網站的內容。網站可能封鎖自動化存取、需要登入，或暫時無法連線。請改試其他網址。" });
   });
   it("distinguishes pre-fetch DNS failures, provider network failures, and malformed provider responses instead of collapsing them into UPSTREAM_FAILED", () => {
-    expect(safeError(new Error("DNS_LOOKUP_FAILED"))).toEqual({ status: 502, code: "DNS_LOOKUP_FAILED", message: "This website's address could not be found. Check the URL and try again." });
-    expect(safeError(new Error("PROVIDER_UNREACHABLE"))).toEqual({ status: 503, code: "PROVIDER_UNREACHABLE", message: "The web content service is temporarily unavailable. Please try again." });
-    expect(safeError(new Error("PROVIDER_BAD_RESPONSE"))).toEqual({ status: 502, code: "PROVIDER_BAD_RESPONSE", message: "ReplyNodes returned no usable clean Markdown for this website. It may be a client-rendered page or block automated access. Try a different URL." });
-    expect(safeError(new Error("INVALID_PROVIDER_RESPONSE"))).toEqual({ status: 502, code: "INVALID_PROVIDER_RESPONSE", message: "ReplyNodes returned no usable clean Markdown for this website. It may be a client-rendered page or block automated access. Try a different URL." });
+    expect(safeError(new Error("DNS_LOOKUP_FAILED"))).toEqual({ status: 502, code: "DNS_LOOKUP_FAILED", message: "找不到這個網站的位址，請檢查網址後再試。" });
+    expect(safeError(new Error("PROVIDER_UNREACHABLE"))).toEqual({ status: 503, code: "PROVIDER_UNREACHABLE", message: "網頁內容服務暫時無法使用，請稍後再試。" });
+    expect(safeError(new Error("PROVIDER_BAD_RESPONSE"))).toEqual({ status: 502, code: "PROVIDER_BAD_RESPONSE", message: "ReplyNodes 沒有為這個網站回傳可用的乾淨 Markdown。網站可能是用戶端渲染，或封鎖自動化存取。請改試其他網址。" });
+    expect(safeError(new Error("INVALID_PROVIDER_RESPONSE"))).toEqual({ status: 502, code: "INVALID_PROVIDER_RESPONSE", message: "ReplyNodes 沒有為這個網站回傳可用的乾淨 Markdown。網站可能是用戶端渲染，或封鎖自動化存取。請改試其他網址。" });
   });
 });

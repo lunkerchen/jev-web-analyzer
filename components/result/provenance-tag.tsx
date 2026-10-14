@@ -4,9 +4,9 @@ export type Provenance = "jev" | "homepage" | "run" | "ui";
 
 const LABELS: Record<Provenance, string> = {
   jev: "JEV",
-  homepage: "FROM YOUR HOMEPAGE",
-  run: "RUN",
-  ui: "UI",
+  homepage: "來自你的首頁",
+  run: "執行",
+  ui: "介面",
 };
 
 const STYLES: Record<Provenance, string> = {

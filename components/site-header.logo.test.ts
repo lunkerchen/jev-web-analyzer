@@ -20,7 +20,7 @@ describe("header logo contract", () => {
   });
 
   it("links the logo to the live site with an accessible label", () => {
-    expect(source).toMatch(/href="https:\/\/replynodes\.com\/"[^>]*aria-label="ReplyNodes home"/);
+    expect(source).toMatch(/href="https:\/\/replynodes\.com\/"[^>]*aria-label="ReplyNodes 首頁"/);
   });
 
   it("renders the breadcrumb crumb passed by the calling page", () => {

@@ -4,9 +4,9 @@ import { ProvenanceTag } from "./provenance-tag";
 import { SignalCard } from "./signal-card";
 
 const LABELS: Record<string, string> = {
-  audience: "Audience",
-  strongest_reason_to_choose: "Reason to choose",
-  self_serve_motion: "Self-serve motion",
+  audience: "目標客群",
+  strongest_reason_to_choose: "選擇理由",
+  self_serve_motion: "成交模式",
 };
 
 export function SecondarySignalRow({ classifications }: { classifications: AnalysisResponse["classifications"] }) {
@@ -28,9 +28,9 @@ export function SecondarySignalHeading() {
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h2 className="text-lg font-semibold">Supporting signals</h2>
+        <h2 className="text-lg font-semibold">輔助訊號</h2>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          Audience, Reason to choose and Motion are informational: no good/bad valence is attached to them.
+          目標客群、選擇理由與成交模式僅供參考，不附帶好壞評價。
         </p>
       </div>
       <ProvenanceTag kind="jev" />

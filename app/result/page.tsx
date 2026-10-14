@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { ResultPage } from "@/components/result-page";
 
 export const metadata: Metadata = {
-  title: "Result · Jev Web Analyzer · ReplyNodes",
-  description: "What Jev thinks about your SaaS: structured judgments of your homepage built with ReplyNodes and Jev via Vercel AI Gateway.",
+  title: "分析結果 · Jev 網站分析器 · ReplyNodes",
+  description: "Jev 怎麼看你的 SaaS：以 ReplyNodes 與 Jev 對首頁做出的結構化判斷。",
 };
 
 export default function Page() {

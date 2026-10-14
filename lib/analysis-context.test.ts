@@ -12,13 +12,13 @@ describe("analysis context", () => {
       sourceCharacters: ANALYSIS_CONTEXT_CAP + 234,
       contextTruncated: true,
     });
-    expect(analysisContextLabel(context)).toBe("Showing first 120,000 of 120,234 extracted characters");
+    expect(analysisContextLabel(context)).toBe("顯示前 120,000 個字元（共擷取 120,234 個字元）");
   });
 
   it("does not report truncation below the cap", () => {
     const context = prepareAnalysisContext("clean markdown");
 
     expect(context.contextTruncated).toBe(false);
-    expect(analysisContextLabel(context)).toBe("Showing 14 extracted characters");
+    expect(analysisContextLabel(context)).toBe("顯示全部 14 個擷取字元");
   });
 });

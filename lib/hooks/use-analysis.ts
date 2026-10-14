@@ -28,16 +28,16 @@ export function useAnalysis() {
     let completedResult: AnalysisResponse | undefined;
     try {
       const response = await fetch(ANALYZE_API_PATH, { method: "POST", headers: { "content-type": "application/json", accept: "application/x-ndjson" }, body: JSON.stringify(body), signal: controller.signal });
-      if (!response.ok && !response.body) { const data = await response.json(); setErrorCode(typeof data.error?.code === "string" ? data.error.code : ""); throw new Error(data.error?.message || "Analysis failed."); }
-      if (!response.body) throw new Error("The analysis stream was unavailable.");
+      if (!response.ok && !response.body) { const data = await response.json(); setErrorCode(typeof data.error?.code === "string" ? data.error.code : ""); throw new Error(data.error?.message || "分析失敗。"); }
+      if (!response.body) throw new Error("無法取得分析串流。");
       const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = ""; let malformed = false; let receivedResult = false;
       const apply = (event: AnalysisEvent) => { setTrace((state) => reduceTrace(state, event)); if (event.type === "result-built" || event.type === "done" || event.type === "cache-hit") { receivedResult = true; completedResult = event.result; setResult(event.result); } if (event.type === "error") { setErrorCode(event.code); throw new Error(event.message); } };
       while (true) { const part = await reader.read(); if (part.done) break; const parsed = parseNdjsonChunk(buffer, decoder.decode(part.value, { stream: true })); buffer = parsed.remainder; malformed ||= parsed.malformed; parsed.events.forEach(apply); }
       const tail = flushNdjsonRemainder(buffer + decoder.decode()); malformed ||= tail.malformed; tail.events.forEach(apply);
-      if (malformed && !receivedResult) throw new Error("The analysis stream was malformed.");
-      if (!receivedResult) throw new Error("The analysis did not return a result.");
+      if (malformed && !receivedResult) throw new Error("分析串流格式不正確。");
+      if (!receivedResult) throw new Error("分析沒有回傳結果。");
     } catch (caught) {
-      if (!controller.signal.aborted) setError(caught instanceof Error ? caught.message : "Analysis failed.");
+      if (!controller.signal.aborted) setError(caught instanceof Error ? caught.message : "分析失敗。");
     } finally {
       if (!controller.signal.aborted) setLoading(false);
     }

@@ -23,14 +23,14 @@ describe("buildShareText", () => {
         { name: "trust_strength", type: "choice", value: "none_apparent" },
       ]),
     );
-    expect(text).toContain("Value proposition clarity: supported");
-    expect(text).toContain("Differentiation: partly supported");
-    expect(text).toContain("Trust strength: not determined");
+    expect(text).toContain("價值主張清晰度：有支持");
+    expect(text).toContain("差異化：部分支持");
+    expect(text).toContain("信任強度：無法判斷");
     expect(text).not.toMatch(/\d/);
   });
 
   it("omits the change-first card from the evaluative summary", () => {
     const text = buildShareText(response([{ name: "change_first", type: "choice", value: "make_cta_explicit" }]));
-    expect(text).not.toContain("Change first");
+    expect(text).not.toContain("優先修改");
   });
 });

@@ -5,7 +5,7 @@ import { ConfidenceBadge } from "@/components/result/signal-parts";
 import { SiteHeader } from "@/components/site-header";
 import { isLowConfidence } from "@/lib/confidence";
 import type { LeaderboardData } from "@/lib/leaderboard";
-import { badgeMarkdown, formatRunDate, labelForQuestionId, loadLeaderboardData, matchedLevelDescription, pricingLabel, scoreBand } from "@/lib/leaderboard";
+import { badgeMarkdown, formatRunDate, labelForQuestionIdZh, loadLeaderboardData, matchedLevelDescription, pricingLabel, scoreBand } from "@/lib/leaderboard";
 import { cn } from "@/lib/utils";
 
 function findRow(data: LeaderboardData | null, domain: string) {
@@ -19,10 +19,10 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ domain: string }> }): Promise<Metadata> {
   const { domain } = await params;
   const row = findRow(loadLeaderboardData(), domain);
-  if (!row || row.status !== "ok") return { title: `${domain} · Jev leaderboard · ReplyNodes` };
+  if (!row || row.status !== "ok") return { title: `${domain} · Jev 排行榜 · ReplyNodes` };
   return {
-    title: `${domain} — ${row.overall}/100 · Jev leaderboard · ReplyNodes`,
-    description: `How clearly ${domain}'s homepage communicates to a first-time visitor, judged by Jev against a fixed rubric.`,
+    title: `${domain} — ${row.overall}/100 · Jev 排行榜 · ReplyNodes`,
+    description: `${domain} 的首頁能否讓第一次來的訪客看懂？由 Jev 依據固定的評分標準判斷。`,
   };
 }
 
@@ -45,7 +45,7 @@ export default async function LeaderboardDomainPage({ params }: { params: Promis
       <SiteHeader crumb={domain} />
 
       <div className="flex flex-col gap-2">
-        <Link href="/leaderboard" className="text-sm text-muted-foreground underline underline-offset-2">← Back to leaderboard</Link>
+        <Link href="/leaderboard" className="text-sm text-muted-foreground underline underline-offset-2">← 回到排行榜</Link>
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-2xl font-bold tracking-tight">{domain}</h1>
           {row.status === "ok" && row.overall !== undefined ? (
@@ -58,8 +58,8 @@ export default async function LeaderboardDomainPage({ params }: { params: Promis
           ) : null}
         </div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-          <span>Rubric version <b className="font-mono text-foreground">{row.rubric_version}</b></span>
-          <span>Analyzed <b className="text-foreground">{formatRunDate(row.fetched_at)}</b></span>
+          <span>評分標準版本 <b className="font-mono text-foreground">{row.rubric_version}</b></span>
+          <span>分析時間 <b className="text-foreground">{formatRunDate(row.fetched_at)}</b></span>
           {row.final_url ? (
             <a href={row.final_url} target="_blank" rel="noreferrer" className="underline underline-offset-2">{row.final_url}</a>
           ) : null}
@@ -68,14 +68,14 @@ export default async function LeaderboardDomainPage({ params }: { params: Promis
 
       {dataset.sample ? (
         <div className="rounded-lg border border-dashed border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
-          This is sample data for demonstration — not a real Jev run.
+          這是供展示用的範例資料，並非 Jev 的實際執行結果。
         </div>
       ) : null}
 
       {row.status !== "ok" ? (
         <div className="rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground">
-          This domain could not be analyzed in this run (<code className="font-mono">{row.status}</code>
-          {row.error_code ? <>, <code className="font-mono">{row.error_code}</code></> : null}). No scores are available.
+          本次無法分析這個網域（<code className="font-mono">{row.status}</code>
+          {row.error_code ? <>、<code className="font-mono">{row.error_code}</code></> : null}），因此沒有分數。
         </div>
       ) : (
         <div className="flex flex-col gap-3">
@@ -88,7 +88,7 @@ export default async function LeaderboardDomainPage({ params }: { params: Promis
             return (
               <article key={id} className={cn("rounded-xl border bg-card p-4 shadow-sm", low && "border-[#eccb92] dark:border-[#6b4d1c]")}>
                 <div className="flex items-start justify-between gap-3">
-                  <h2 className="text-sm font-semibold">{labelForQuestionId(id)}</h2>
+                  <h2 className="text-sm font-semibold">{labelForQuestionIdZh(id)}</h2>
                   <div className="flex items-center gap-2">
                     <span className="rounded-full border bg-muted px-2 py-0.5 text-xs font-bold tabular-nums">{answer.value.toFixed(1)} / 4</span>
                     <ConfidenceBadge confidence={answer.confidence} />
@@ -102,28 +102,28 @@ export default async function LeaderboardDomainPage({ params }: { params: Promis
           {row.answers.pricing_visibility ? (
             <article className={cn("rounded-xl border bg-card p-4 shadow-sm", isLowConfidence(row.answers.pricing_visibility.confidence) && "border-[#eccb92] dark:border-[#6b4d1c]")}>
               <div className="flex items-start justify-between gap-3">
-                <h2 className="text-sm font-semibold">Pricing visibility</h2>
+                <h2 className="text-sm font-semibold">定價揭露程度</h2>
                 <ConfidenceBadge confidence={row.answers.pricing_visibility.confidence} />
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">{pricingLabel(String(row.answers.pricing_visibility.value))} — reported as a category, not part of the score.</p>
+              <p className="mt-2 text-sm text-muted-foreground">{pricingLabel(String(row.answers.pricing_visibility.value))} — 僅作為分類呈現，不計入分數。</p>
             </article>
           ) : null}
         </div>
       )}
 
       <article className="rounded-xl border border-dashed p-4 text-xs text-muted-foreground">
-        <h2 className="mb-2 text-sm font-semibold text-foreground">Run evidence</h2>
+        <h2 className="mb-2 text-sm font-semibold text-foreground">執行紀錄</h2>
         <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <div><dt>Scrape</dt><dd className="font-mono text-foreground">{row.scrape_ms ?? "—"} ms</dd></div>
+          <div><dt>擷取</dt><dd className="font-mono text-foreground">{row.scrape_ms ?? "—"} ms</dd></div>
           <div><dt>Jev</dt><dd className="font-mono text-foreground">{row.jev_ms ?? "—"} ms</dd></div>
-          <div><dt>Total</dt><dd className="font-mono text-foreground">{row.total_ms ?? "—"} ms</dd></div>
-          <div><dt>ReplyNodes request</dt><dd className="truncate font-mono text-foreground">{row.request_id ?? "—"}</dd></div>
+          <div><dt>總計</dt><dd className="font-mono text-foreground">{row.total_ms ?? "—"} ms</dd></div>
+          <div><dt>請求 ID</dt><dd className="truncate font-mono text-foreground">{row.request_id ?? "—"}</dd></div>
         </dl>
       </article>
 
       {row.status === "ok" ? (
         <article className="rounded-xl border p-4">
-          <h2 className="mb-2 text-sm font-semibold">Add this badge to your README</h2>
+          <h2 className="mb-2 text-sm font-semibold">把這個徽章加到你的 README</h2>
           <pre className="overflow-x-auto rounded-lg bg-muted p-3 text-xs"><code>{badgeMarkdown(domain)}</code></pre>
         </article>
       ) : null}

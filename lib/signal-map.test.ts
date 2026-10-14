@@ -9,6 +9,7 @@ import {
   labelFor,
   statusFor,
   statusForDisplay,
+  valueLabel,
   type SignalStatus,
 } from "./signal-map";
 
@@ -64,7 +65,24 @@ describe("signal-map status mapping", () => {
   });
 
   it("falls back to a humanized label for unknown signals", () => {
-    expect(labelFor("understandable_in_10_seconds")).toBe("Understandable in 10 seconds");
+    expect(labelFor("understandable_in_10_seconds")).toBe("10 秒內看得懂");
     expect(labelFor("custom_thing")).toBe("Custom thing");
+  });
+
+  it("translates enum values to Traditional Chinese", () => {
+    expect(valueLabel("smbs")).toBe("中小企業");
+    expect(valueLabel("strongly_sales_led")).toBe("明顯靠業務成交");
+    expect(valueLabel("add_customer_proof")).toBe("加上客戶證據");
+    expect(valueLabel("clear_get_api_key")).toBe("明確・取得 API 金鑰");
+    expect(valueLabel("unclear_none_detected")).toBe("不明確・未偵測到");
+    expect(valueLabel("brand_new_value")).toBe("Brand new value");
+  });
+
+  it("translates every declared enum value", () => {
+    for (const [name, definition] of Object.entries(DEFAULT_QUESTIONS)) {
+      for (const value of Object.keys(definition.criteria)) {
+        expect(valueLabel(value), `${name}.${value}`).toMatch(/[\u4e00-\u9fff]/);
+      }
+    }
   });
 });

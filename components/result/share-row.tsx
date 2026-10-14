@@ -19,7 +19,7 @@ export function ShareRow({ url, shareText }: { url: string; shareText: string })
   async function share() {
     if (navigator.share) {
       try {
-        await navigator.share({ title: "Jev result", text: shareText, url });
+        await navigator.share({ title: "Jev 分析結果", text: shareText, url });
         trackResultShared(url);
       } catch {
         /* user dismissed the share sheet */
@@ -32,17 +32,17 @@ export function ShareRow({ url, shareText }: { url: string; shareText: string })
   return (
     <div className="flex flex-col justify-between gap-3 border-t pt-6 sm:flex-row sm:items-center">
       <div>
-        <h2 className="text-base font-semibold">Share this result</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Homepage only · the response trace is in Run details.</p>
+        <h2 className="text-base font-semibold">分享這份結果</h2>
+        <p className="mt-1 text-sm text-muted-foreground">僅限首頁 · 回應軌跡請見「執行細節」。</p>
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <ProvenanceTag kind="ui" />
         <Button type="button" variant="outline" size="sm" onClick={() => void copy()}>
           {copied ? <Check /> : <Copy />}
-          {copied ? "Copied" : "Copy result link"}
+          {copied ? "已複製" : "複製結果連結"}
         </Button>
         <Button type="button" size="sm" onClick={() => void share()}>
-          <Share2 /> Share
+          <Share2 /> 分享
         </Button>
       </div>
     </div>

@@ -7,10 +7,10 @@ import { ProvenanceTag } from "./provenance-tag";
 import { ConclusionBlock, ConfidenceBadge, percent } from "./signal-parts";
 
 const EVIDENCE_LABEL: Record<string, string> = {
-  "hero-heading": "Hero heading",
-  "first-paragraph": "First paragraph",
-  "cta-line": "CTA line",
-  "list-item": "List item",
+  "hero-heading": "首頁主標題",
+  "first-paragraph": "第一段文字",
+  "cta-line": "行動按鈕文字",
+  "list-item": "清單項目",
 };
 
 function HeroSignalCard({ signal }: { signal: HeroSignal }) {
@@ -28,7 +28,7 @@ function HeroSignalCard({ signal }: { signal: HeroSignal }) {
           <ConclusionBlock classification={classification} />
         </div>
       ) : (
-        <p className="mt-1 text-sm font-semibold text-muted-foreground">Not returned</p>
+        <p className="mt-1 text-sm font-semibold text-muted-foreground">未回傳</p>
       )}
     </div>
   );
@@ -41,7 +41,7 @@ function EvidenceBlock({ markdownPreview }: { markdownPreview: string }) {
       <div className="flex flex-wrap items-center gap-2">
         <ProvenanceTag kind="homepage" />
         <span className="text-[11px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
-          Lines Jev read
+          Jev 讀到的內容
         </span>
       </div>
       {evidence.length ? (
@@ -58,7 +58,7 @@ function EvidenceBlock({ markdownPreview }: { markdownPreview: string }) {
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-sm italic text-muted-foreground">No supporting line available</p>
+        <p className="mt-3 text-sm italic text-muted-foreground">沒有可引用的內容</p>
       )}
     </div>
   );
@@ -68,7 +68,7 @@ export function ThinContentBanner({ characters }: { characters: number }) {
   return (
     <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[#eccb92] bg-[#fdf3e3] px-4 py-3 text-sm font-bold text-[#b45309] dark:border-[#6b4d1c] dark:bg-[#3a2a10] dark:text-[#fbbf24]">
       <ProvenanceTag kind="run" />
-      Thin page ({characters.toLocaleString()} characters) — signals may be low-evidence.
+      頁面內容偏少（{characters.toLocaleString()} 字元）—— 判讀依據可能不足。
     </div>
   );
 }
@@ -81,7 +81,7 @@ export function FirstImpression({ result }: { result: AnalysisResponse }) {
   return (
     <section>
       <p className="text-[11px] font-extrabold uppercase tracking-[0.13em] text-muted-foreground">
-        Your homepage, as Jev read it
+        Jev 讀到的首頁
       </p>
 
       <div className="mt-3">
@@ -90,7 +90,7 @@ export function FirstImpression({ result }: { result: AnalysisResponse }) {
             <figcaption className="flex flex-wrap items-center gap-2">
               <ProvenanceTag kind="homepage" />
               <span className="text-[11px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground">
-                Quoted from your homepage
+                引自你的首頁
               </span>
             </figcaption>
             <blockquote className="mt-2">
@@ -100,7 +100,7 @@ export function FirstImpression({ result }: { result: AnalysisResponse }) {
             </blockquote>
           </figure>
         ) : (
-          <p className="text-sm text-muted-foreground">No H1 returned for this homepage · quote omitted.</p>
+          <p className="text-sm text-muted-foreground">這個首頁沒有回傳 H1 · 省略引文。</p>
         )}
       </div>
 
@@ -117,17 +117,17 @@ export function FirstImpression({ result }: { result: AnalysisResponse }) {
             {aggregate ? (
               <>
                 <b>
-                  Confidence {percent(aggregate.min)}–{percent(aggregate.max)} · mean {percent(aggregate.mean)} across{" "}
-                  {aggregate.count} signals
+                  信心度 {percent(aggregate.min)}–{percent(aggregate.max)} · 平均 {percent(aggregate.mean)}，共{" "}
+                  {aggregate.count} 項訊號
                 </b>
               </>
             ) : (
-              <b>Confidence unavailable</b>
+              <b>無信心度資料</b>
             )}
           </span>
         </div>
         <span className="text-xs text-muted-foreground">
-          Aggregate of Jev&apos;s own returned per-signal confidence values
+          彙整 Jev 對各項訊號回傳的信心度
         </span>
       </div>
 

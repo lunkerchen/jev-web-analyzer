@@ -21,7 +21,7 @@ function wantsStream(request: Request) { return request.headers.get("accept")?.s
 function eventLine(event: AnalysisEvent) { return new TextEncoder().encode(`${JSON.stringify(event)}\n`); }
 function streamError(error: unknown) { const result = safeError(error); return { type: "error" as const, code: result.code, message: result.message }; }
 function streamFailure(status: number, code: string, message: string) { return new Response(`${JSON.stringify({ type: "error", code, message })}\n`, { status, headers: { "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-cache", "x-accel-buffering": "no" } }); }
-export function GET() { return NextResponse.json({ message: "Use POST /jev-web-analyzer/api/analyze to analyze a URL." }, { status: 405, headers: { Allow: "POST" } }); }
+export function GET() { return NextResponse.json({ message: "請使用 POST /jev-web-analyzer/api/analyze 分析網址。" }, { status: 405, headers: { Allow: "POST" } }); }
 
 async function analyze(inputUrl: string, judgments: JudgmentInput[], emit: (event: AnalysisEvent) => void, cached?: AnalysisResponse): Promise<AnalysisResponse> {
   if (cached) { emit({ type: "request-started", startedAt: cached.timeline.startedAt }); emit({ type: "cache-hit", result: cached }); emit({ type: "done", result: cached }); return cached; }
@@ -40,9 +40,9 @@ async function analyze(inputUrl: string, judgments: JudgmentInput[], emit: (even
 
 export async function POST(request: Request) {
   const stream = wantsStream(request); const respondError = (status: number, code: string, message: string) => stream ? streamFailure(status, code, message) : fail(status, code, message);
-  if (!allowRequest(clientIp(request))) return respondError(429, "RATE_LIMITED", "Too many requests. Please try again shortly."); if (!process.env.TYPESAFE_AI_API_KEY) return respondError(503, "NOT_CONFIGURED", "Analysis is temporarily unavailable.");
-  let body: unknown; try { if (Number(request.headers.get("content-length") ?? 0) > 24_000) return respondError(413, "REQUEST_TOO_LARGE", "The request is too large."); body = await request.json(); } catch { return respondError(400, "INVALID_JSON", "The request body is invalid."); }
-  const parsed = requestSchema.safeParse(body); if (!parsed.success) return respondError(400, "INVALID_INPUT", "Enter a valid public URL and bounded judgments."); const { url: inputUrl, judgments } = parsed.data; const key = cacheKey(inputUrl, judgments); const cached = getCached<AnalysisResponse>(key);
+  if (!allowRequest(clientIp(request))) return respondError(429, "RATE_LIMITED", "請求過於頻繁，請稍後再試。"); if (!process.env.TYPESAFE_AI_API_KEY) return respondError(503, "NOT_CONFIGURED", "分析服務暫時無法使用。");
+  let body: unknown; try { if (Number(request.headers.get("content-length") ?? 0) > 24_000) return respondError(413, "REQUEST_TOO_LARGE", "請求內容過大。"); body = await request.json(); } catch { return respondError(400, "INVALID_JSON", "請求內容格式不正確。"); }
+  const parsed = requestSchema.safeParse(body); if (!parsed.success) return respondError(400, "INVALID_INPUT", "請輸入有效的公開網址，以及數量在限制內的自訂判斷。"); const { url: inputUrl, judgments } = parsed.data; const key = cacheKey(inputUrl, judgments); const cached = getCached<AnalysisResponse>(key);
   if (!stream && cached) return NextResponse.json(cached, { headers: { "x-analysis-cache": "hit" } });
   if (!stream) { try { const output = await analyze(inputUrl, judgments, () => undefined, cached); return NextResponse.json(output, { headers: { "x-analysis-cache": cached ? "hit" : "miss" } }); } catch (error) { const result = safeError(error); return fail(result.status, result.code, result.message); } }
   const readable = new ReadableStream<Uint8Array>({ async start(controller) { const emit = (event: AnalysisEvent) => controller.enqueue(eventLine(event)); try { await analyze(inputUrl, judgments, emit, cached); controller.close(); } catch (error) { controller.enqueue(eventLine(streamError(error))); controller.close(); } } });

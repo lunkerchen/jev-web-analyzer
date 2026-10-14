@@ -6,13 +6,13 @@ describe("founder summary helpers", () => {
     expect(founderSynthesis([
       { name: "audience", type: "choice", value: "developers" },
       { name: "differentiation", type: "choice", value: "strong" },
-    ])).toBe("Jev sees this as a Developers audience, Strong differentiation.");
+    ])).toBe("Jev 判斷此站目標客群為開發者、差異化強。");
     expect(founderSynthesis([])).toBe("");
   });
 
   it("splits the encoded CTA without changing the returned key", () => {
-    expect(splitCtaSignal("somewhat_get_api_key")).toEqual({ clarity: "Somewhat clear", action: "Get API key" });
-    expect(splitCtaSignal("unclear_none_detected")).toEqual({ clarity: "Unclear", action: "None detected" });
+    expect(splitCtaSignal("somewhat_get_api_key")).toEqual({ clarity: "還算明確", action: "取得 API 金鑰" });
+    expect(splitCtaSignal("unclear_none_detected")).toEqual({ clarity: "不明確", action: "未偵測到" });
   });
 
   it("keeps founder sections bounded and omits missing answers", () => {
