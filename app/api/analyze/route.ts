@@ -1,4 +1,5 @@
 import { experimental_evaluate as evaluate } from "ai";
+import { typeSafeAi } from "@ai-sdk/typesafe-ai";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { allowRequest } from "@/lib/abuse";
@@ -11,7 +12,7 @@ import { DEFAULT_QUESTIONS } from "@/lib/founder-questions";
 import { prepareAnalysisContext } from "@/lib/analysis-context";
 
 export const maxDuration = 60;
-const MODEL = "typesafe-ai/jev" as const;
+const MODEL = typeSafeAi.evaluationModel("jev-latest");
 const REQUESTED_MODEL = "jev-latest" as const;
 function clientIp(request: Request) { return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown"; }
 function fail(status: number, code: string, message: string) { return NextResponse.json({ error: { code, message } }, { status }); }
@@ -39,7 +40,7 @@ async function analyze(inputUrl: string, judgments: JudgmentInput[], emit: (even
 
 export async function POST(request: Request) {
   const stream = wantsStream(request); const respondError = (status: number, code: string, message: string) => stream ? streamFailure(status, code, message) : fail(status, code, message);
-  if (!allowRequest(clientIp(request))) return respondError(429, "RATE_LIMITED", "Too many requests. Please try again shortly."); if (!process.env.AI_GATEWAY_API_KEY) return respondError(503, "NOT_CONFIGURED", "Analysis is temporarily unavailable.");
+  if (!allowRequest(clientIp(request))) return respondError(429, "RATE_LIMITED", "Too many requests. Please try again shortly."); if (!process.env.TYPESAFE_AI_API_KEY) return respondError(503, "NOT_CONFIGURED", "Analysis is temporarily unavailable.");
   let body: unknown; try { if (Number(request.headers.get("content-length") ?? 0) > 24_000) return respondError(413, "REQUEST_TOO_LARGE", "The request is too large."); body = await request.json(); } catch { return respondError(400, "INVALID_JSON", "The request body is invalid."); }
   const parsed = requestSchema.safeParse(body); if (!parsed.success) return respondError(400, "INVALID_INPUT", "Enter a valid public URL and bounded judgments."); const { url: inputUrl, judgments } = parsed.data; const key = cacheKey(inputUrl, judgments); const cached = getCached<AnalysisResponse>(key);
   if (!stream && cached) return NextResponse.json(cached, { headers: { "x-analysis-cache": "hit" } });

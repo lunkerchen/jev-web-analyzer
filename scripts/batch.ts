@@ -7,20 +7,21 @@
 //
 // Local usage (env vars are not auto-loaded outside the Next.js process):
 //   pnpm exec tsx --env-file=.env.local scripts/batch.ts -- --concurrency=4
-// or export AI_GATEWAY_API_KEY in the shell and run:
+// or export TYPESAFE_AI_API_KEY in the shell and run:
 //   pnpm run batch -- --domains=data/domains.txt --force
 //
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { experimental_evaluate as evaluate, APICallError } from "ai";
+import { typeSafeAi } from "@ai-sdk/typesafe-ai";
 import { prepareAnalysisContext } from "../lib/analysis-context";
 import { rowsToLeaderboardCsv, type LeaderboardRow } from "../lib/csv";
 import { exampleDomainUrl } from "../lib/example-domains";
 import { computeOverall, loadRubric, sanitizeRubricAnswer, type RubricFile } from "../lib/rubric";
 import { fetchPublicMarkdown } from "../lib/url-safety";
 
-const MODEL = "typesafe-ai/jev" as const;
+const MODEL = typeSafeAi.evaluationModel("jev-latest");
 
 type BatchOptions = {
   domainsFile: string;
@@ -337,8 +338,8 @@ async function writeOutputs(rows: LeaderboardRow[], rubric: RubricFile, opts: Ba
 }
 
 async function main(): Promise<void> {
-  const gatewayKey = process.env.AI_GATEWAY_API_KEY;
-  const missing = [!gatewayKey && "AI_GATEWAY_API_KEY"].filter(Boolean);
+  const apiKey = process.env.TYPESAFE_AI_API_KEY;
+  const missing = [!apiKey && "TYPESAFE_AI_API_KEY"].filter(Boolean);
   if (missing.length) {
     console.error(`Missing required env var(s): ${missing.join(", ")}`);
     process.exitCode = 1;
